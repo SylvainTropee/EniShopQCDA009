@@ -16,10 +16,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        val articleRepository = ArticleRepository()
 
-        val id = ArticleRepository().addArticle(Article(name = "Article 4"))
+        val id = articleRepository.addArticle(Article(name = "Article 4"))
         Log.i(TAG, "id: $id")
-        val article = ArticleRepository().getArticle(id)
+        val article = articleRepository.getArticle(id)
         Log.i(TAG, article.toString())
 
         setContent {
