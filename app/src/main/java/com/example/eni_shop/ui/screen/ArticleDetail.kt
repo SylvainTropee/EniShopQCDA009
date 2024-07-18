@@ -1,5 +1,6 @@
 package com.example.eni_shop.ui.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,6 +40,7 @@ fun ArticleDetailScreen(article: Article) {
         )
     }
 }
+
 
 
 @Composable
