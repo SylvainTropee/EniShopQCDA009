@@ -81,7 +81,7 @@ fun ArticleDetail(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Prix : ${article.price} €")
+            Text(text = "Prix : ${String.format("%.2f", article.price)} €")
             Text(text = "Date de sortie : ${article.date.convertDateToStringFR()}")
         }
         Row(
