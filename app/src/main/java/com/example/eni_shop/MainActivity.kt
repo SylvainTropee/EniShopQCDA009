@@ -20,14 +20,12 @@ class MainActivity : ComponentActivity() {
 
         val articleRepository = ArticleRepository()
 
-        val id = articleRepository.addArticle(Article(name = "Article 4"))
-        Log.i(TAG, "id: $id")
-        val article = articleRepository.getArticle(id)
+        val article = articleRepository.getArticle(2)
         Log.i(TAG, article.toString())
 
         setContent {
             ENISHOPTheme {
-                ArticleDetailScreen()
+                ArticleDetailScreen(article = article!!)
             }
         }
     }
