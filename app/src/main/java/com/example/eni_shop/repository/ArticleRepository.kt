@@ -16,4 +16,11 @@ class ArticleRepository {
         return articleDAO.insert(article)
     }
 
+    fun getAllArticles() : List<Article> {
+        return articleDAO.findAll()
+    }
+
+
+
+
 }

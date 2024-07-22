@@ -3,7 +3,6 @@ package com.example.eni_shop.ui.screen
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,14 +54,17 @@ fun ArticleFormScreen() {
 
 @Composable
 fun CustomTextField(
+    modifier: Modifier = Modifier,
     label: String,
     onValueChange: (String) -> Unit,
     value: String = "",
-    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     trailingIcon: @Composable() (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
+
+
+
     Surface(
         border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
         shape = MaterialTheme.shapes.medium,
