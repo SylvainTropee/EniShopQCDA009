@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.eni_shop.repository.ArticleRepository
+import com.example.eni_shop.ui.screen.ArticleDetailScreen
 import com.example.eni_shop.ui.screen.ArticleListScreen
 import com.example.eni_shop.ui.theme.ENISHOPTheme
 
@@ -23,7 +24,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ENISHOPTheme {
-                ArticleListScreen()
+                ArticleDetailScreen(articleId = 3)
             }
         }
     }

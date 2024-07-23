@@ -9,17 +9,17 @@ import com.example.eni_shop.repository.ArticleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class ArticleListViewModel(private val articleRepository: ArticleRepository) : ViewModel() {
+class ArticleDetailViewModel(private val articleRepository: ArticleRepository) : ViewModel() {
 
-    private val _articles = MutableStateFlow<List<Article>>(emptyList())
-    val articles: StateFlow<List<Article>>
-        get() = _articles
+    private val _article = MutableStateFlow<Article>(Article())
+    val article: StateFlow<Article>
+        get() = _article
 
-    val categories = listOf("electronics", "jewelery", "men's clothing", "women's clothing")
-
-
-    init {
-        _articles.value = articleRepository.getAllArticles()
+    fun loadArticleById(id : Long){
+        val currentArticle = articleRepository.getArticle(id)
+        if(currentArticle != null){
+            _article.value = currentArticle
+        }
     }
 
     // Define ViewModel factory in a companion object
@@ -34,11 +34,10 @@ class ArticleListViewModel(private val articleRepository: ArticleRepository) : V
                 // Get the Application object from extras
                 val application = checkNotNull(extras[APPLICATION_KEY])
 
-                return ArticleListViewModel(
+                return ArticleDetailViewModel(
                     ArticleRepository()
                 ) as T
             }
         }
     }
-
 }
