@@ -3,6 +3,7 @@ package com.example.eni_shop.ui.screen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,10 +20,13 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -44,6 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.eni_shop.bo.Article
 import com.example.eni_shop.ui.common.TopBar
@@ -52,6 +57,9 @@ import com.example.eni_shop.ui.vm.ArticleListViewModel
 
 @Composable
 fun ArticleListScreen(
+    onClickToAddArticle: () -> Unit,
+    onClickToDetailArticle : (Long) -> Unit,
+    navHostController: NavHostController,
     articleListViewModel: ArticleListViewModel = viewModel(factory = ArticleListViewModel.Factory)
 ) {
 
@@ -71,7 +79,9 @@ fun ArticleListScreen(
     }
 
     Scaffold(
-        topBar = { TopBar() }
+        topBar = { TopBar(navHostController = navHostController) },
+        floatingActionButton = { ArticleListFAB(onClickToAddArticle = onClickToAddArticle) },
+        floatingActionButtonPosition = FabPosition.End
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             CategoryFilterChip(
@@ -81,7 +91,7 @@ fun ArticleListScreen(
                     selectedCategory = it
                 }
             )
-            ArticleList(articles = filteredArticles)
+            ArticleList(articles = filteredArticles, onClickToDetailArticle = onClickToDetailArticle)
         }
     }
 }
@@ -123,14 +133,17 @@ fun CategoryFilterChip(
 
 
 @Composable
-fun ArticleList(articles: List<Article>) {
+fun ArticleList(
+    articles: List<Article>,
+    onClickToDetailArticle : (Long) -> Unit
+) {
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(4.dp)
     ) {
         items(articles) { article ->
-            ArticleItem(article)
+            ArticleItem(article = article, onClickToDetailArticle = onClickToDetailArticle)
         }
     }
 
@@ -138,13 +151,17 @@ fun ArticleList(articles: List<Article>) {
 }
 
 @Composable
-fun ArticleItem(article: Article = Article()) {
-
+fun ArticleItem(
+    article: Article = Article(),
+    onClickToDetailArticle : (Long) -> Unit
+) {
 
     Card(
         border = BorderStroke(1.5.dp, Color.Blue),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        modifier = Modifier.padding(4.dp)
+        modifier = Modifier.padding(4.dp).clickable {
+            onClickToDetailArticle(article.id)
+        }
     ) {
         Column(
             modifier = Modifier
@@ -181,6 +198,23 @@ fun ArticleItem(article: Article = Article()) {
         }
     }
 }
+
+
+@Composable
+fun ArticleListFAB(onClickToAddArticle: () -> Unit) {
+
+    FloatingActionButton(
+        onClick = onClickToAddArticle,
+        shape = CircleShape
+    ) {
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = "add article",
+            modifier = Modifier.size(50.dp)
+        )
+    }
+}
+
 
 @Composable
 @Preview

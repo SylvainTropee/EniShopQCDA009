@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.eni_shop.bo.Article
 import com.example.eni_shop.ui.common.TopBar
@@ -45,6 +46,7 @@ const val ARTICLE_DESCRIPTION_TAG = "ARTICLE_DESCRIPTION"
 @Composable
 fun ArticleDetailScreen(
     articleId: Long,
+    navHostController: NavHostController,
     articleDetailViewModel: ArticleDetailViewModel = viewModel(factory = ArticleDetailViewModel.Factory)
 ) {
 
@@ -56,7 +58,7 @@ fun ArticleDetailScreen(
 
 
     Scaffold(
-        topBar = { TopBar() }
+        topBar = { TopBar(navHostController = navHostController) }
     ) {
         ArticleDetail(
             article = article,

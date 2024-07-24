@@ -35,13 +35,20 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.eni_shop.ui.common.TopBar
 
 @Composable
-fun ArticleFormScreen() {
+fun ArticleFormScreen(
+    navHostController : NavHostController,
+    navigationIcon : @Composable () -> Unit
+) {
 
     Scaffold(
-        topBar = { TopBar() }
+        topBar = { TopBar(
+            navHostController = navHostController,
+            navigationIcon = navigationIcon
+        ) }
     ) {
         ArticleForm(modifier = Modifier
             .padding(it)
