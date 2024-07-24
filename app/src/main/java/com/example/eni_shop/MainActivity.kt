@@ -11,6 +11,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
@@ -23,10 +28,12 @@ import com.example.eni_shop.destination.EniShopArticleDetailDestination
 import com.example.eni_shop.destination.EniShopArticleFormDestination
 import com.example.eni_shop.destination.EniShopArticleListDestination
 import com.example.eni_shop.repository.ArticleRepository
+import com.example.eni_shop.services.DataStoreManager
 import com.example.eni_shop.ui.screen.ArticleDetailScreen
 import com.example.eni_shop.ui.screen.ArticleFormScreen
 import com.example.eni_shop.ui.screen.ArticleListScreen
 import com.example.eni_shop.ui.theme.ENISHOPTheme
+import kotlinx.coroutines.coroutineScope
 
 private const val TAG = "MainActivity"
 
@@ -35,29 +42,42 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val articleRepository = ArticleRepository()
-
-        val article = articleRepository.getArticle(2)
-        Log.i(TAG, article.toString())
+        val context = this
 
         setContent {
-            ENISHOPTheme {
-                EniShopApp()
+
+            var isDarkModeActivated by rememberSaveable {
+                mutableStateOf(false)
+            }
+
+            LaunchedEffect(Unit) {
+                DataStoreManager.isDarkModeActivated(this@MainActivity).collect {
+                    isDarkModeActivated = it
+                }
+            }
+
+
+            ENISHOPTheme(darkTheme = isDarkModeActivated) {
+                EniShopApp(isDarkModeActivated = isDarkModeActivated)
             }
         }
     }
 }
 
 @Composable
-fun EniShopApp() {
+fun EniShopApp(isDarkModeActivated : Boolean) {
     val navHostController = rememberNavController()
-    EniShopNavHost(navHostController = navHostController)
+    EniShopNavHost(
+        navHostController = navHostController,
+        isDarkModeActivated = isDarkModeActivated
+    )
 }
 
 
 @Composable
 fun EniShopNavHost(
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    isDarkModeActivated : Boolean
 ) {
 
     val context = LocalContext.current
@@ -75,7 +95,8 @@ fun EniShopNavHost(
                         launchSingleTop = true
                     }
                 },
-                navHostController = navHostController
+                navHostController = navHostController,
+                isDarkModeActivated = isDarkModeActivated
             )
         }
         this.composable(
@@ -90,7 +111,8 @@ fun EniShopNavHost(
             if (articleId != null) {
                 ArticleDetailScreen(
                     articleId = articleId,
-                    navHostController = navHostController
+                    navHostController = navHostController,
+                    isDarkModeActivated = isDarkModeActivated
                 )
             } else {
                 Toast.makeText(context, "Article non disponible !", Toast.LENGTH_SHORT).show()
@@ -100,6 +122,7 @@ fun EniShopNavHost(
         this.composable(route = EniShopArticleFormDestination.route) {
             ArticleFormScreen(
                 navHostController = navHostController,
+                isDarkModeActivated = isDarkModeActivated,
                 navigationIcon = {
                     if (navHostController.previousBackStackEntry != null) {
                         Icon(

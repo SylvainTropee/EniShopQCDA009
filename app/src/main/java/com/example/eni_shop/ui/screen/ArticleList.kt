@@ -58,8 +58,9 @@ import com.example.eni_shop.ui.vm.ArticleListViewModel
 @Composable
 fun ArticleListScreen(
     onClickToAddArticle: () -> Unit,
-    onClickToDetailArticle : (Long) -> Unit,
+    onClickToDetailArticle: (Long) -> Unit,
     navHostController: NavHostController,
+    isDarkModeActivated: Boolean,
     articleListViewModel: ArticleListViewModel = viewModel(factory = ArticleListViewModel.Factory)
 ) {
 
@@ -79,7 +80,12 @@ fun ArticleListScreen(
     }
 
     Scaffold(
-        topBar = { TopBar(navHostController = navHostController) },
+        topBar = {
+            TopBar(
+                navHostController = navHostController,
+                isDarkModeActivated = isDarkModeActivated
+            )
+        },
         floatingActionButton = { ArticleListFAB(onClickToAddArticle = onClickToAddArticle) },
         floatingActionButtonPosition = FabPosition.End
     ) { innerPadding ->
@@ -91,7 +97,10 @@ fun ArticleListScreen(
                     selectedCategory = it
                 }
             )
-            ArticleList(articles = filteredArticles, onClickToDetailArticle = onClickToDetailArticle)
+            ArticleList(
+                articles = filteredArticles,
+                onClickToDetailArticle = onClickToDetailArticle
+            )
         }
     }
 }
@@ -135,7 +144,7 @@ fun CategoryFilterChip(
 @Composable
 fun ArticleList(
     articles: List<Article>,
-    onClickToDetailArticle : (Long) -> Unit
+    onClickToDetailArticle: (Long) -> Unit
 ) {
 
     LazyVerticalGrid(
@@ -153,15 +162,17 @@ fun ArticleList(
 @Composable
 fun ArticleItem(
     article: Article = Article(),
-    onClickToDetailArticle : (Long) -> Unit
+    onClickToDetailArticle: (Long) -> Unit
 ) {
 
     Card(
         border = BorderStroke(1.5.dp, Color.Blue),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        modifier = Modifier.padding(4.dp).clickable {
-            onClickToDetailArticle(article.id)
-        }
+//        colors = CardDefaults.cardColors(containerColor = Color.White),
+        modifier = Modifier
+            .padding(4.dp)
+            .clickable {
+                onClickToDetailArticle(article.id)
+            }
     ) {
         Column(
             modifier = Modifier

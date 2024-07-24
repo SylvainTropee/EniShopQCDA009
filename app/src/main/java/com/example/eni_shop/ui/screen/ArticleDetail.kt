@@ -47,6 +47,7 @@ const val ARTICLE_DESCRIPTION_TAG = "ARTICLE_DESCRIPTION"
 fun ArticleDetailScreen(
     articleId: Long,
     navHostController: NavHostController,
+    isDarkModeActivated: Boolean,
     articleDetailViewModel: ArticleDetailViewModel = viewModel(factory = ArticleDetailViewModel.Factory)
 ) {
 
@@ -58,7 +59,12 @@ fun ArticleDetailScreen(
 
 
     Scaffold(
-        topBar = { TopBar(navHostController = navHostController) }
+        topBar = {
+            TopBar(
+                navHostController = navHostController,
+                isDarkModeActivated = isDarkModeActivated
+            )
+        }
     ) {
         ArticleDetail(
             article = article,
@@ -88,21 +94,23 @@ fun ArticleDetail(
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Justify,
             lineHeight = 1.em,
-            modifier = Modifier.clickable {
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(
-                        "https://www.google.com/search?q=eni+shop+${
-                            article.name.replace(
-                                " ",
-                                "+"
-                            )
-                        }"
-                    )
-                ).also {
-                    context.startActivity(it)
+            modifier = Modifier
+                .clickable {
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(
+                            "https://www.google.com/search?q=eni+shop+${
+                                article.name.replace(
+                                    " ",
+                                    "+"
+                                )
+                            }"
+                        )
+                    ).also {
+                        context.startActivity(it)
+                    }
                 }
-            }.testTag(ARTICLE_NAME_TAG)
+                .testTag(ARTICLE_NAME_TAG)
         )
         Surface(
             color = MaterialTheme.colorScheme.primaryContainer,

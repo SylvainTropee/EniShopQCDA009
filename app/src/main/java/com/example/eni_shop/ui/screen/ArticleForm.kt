@@ -41,13 +41,15 @@ import com.example.eni_shop.ui.common.TopBar
 @Composable
 fun ArticleFormScreen(
     navHostController : NavHostController,
-    navigationIcon : @Composable () -> Unit
+    navigationIcon : @Composable () -> Unit,
+    isDarkModeActivated : Boolean
 ) {
 
     Scaffold(
         topBar = { TopBar(
             navHostController = navHostController,
-            navigationIcon = navigationIcon
+            navigationIcon = navigationIcon,
+            isDarkModeActivated = isDarkModeActivated
         ) }
     ) {
         ArticleForm(modifier = Modifier
