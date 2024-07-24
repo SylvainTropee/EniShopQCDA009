@@ -47,7 +47,6 @@ const val ARTICLE_DESCRIPTION_TAG = "ARTICLE_DESCRIPTION"
 fun ArticleDetailScreen(
     articleId: Long,
     navHostController: NavHostController,
-    isDarkModeActivated: Boolean,
     articleDetailViewModel: ArticleDetailViewModel = viewModel(factory = ArticleDetailViewModel.Factory)
 ) {
 
@@ -61,8 +60,7 @@ fun ArticleDetailScreen(
     Scaffold(
         topBar = {
             TopBar(
-                navHostController = navHostController,
-                isDarkModeActivated = isDarkModeActivated
+                navHostController = navHostController
             )
         }
     ) {

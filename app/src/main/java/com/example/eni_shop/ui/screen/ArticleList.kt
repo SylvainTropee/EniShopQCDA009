@@ -60,7 +60,6 @@ fun ArticleListScreen(
     onClickToAddArticle: () -> Unit,
     onClickToDetailArticle: (Long) -> Unit,
     navHostController: NavHostController,
-    isDarkModeActivated: Boolean,
     articleListViewModel: ArticleListViewModel = viewModel(factory = ArticleListViewModel.Factory)
 ) {
 
@@ -82,8 +81,7 @@ fun ArticleListScreen(
     Scaffold(
         topBar = {
             TopBar(
-                navHostController = navHostController,
-                isDarkModeActivated = isDarkModeActivated
+                navHostController = navHostController
             )
         },
         floatingActionButton = { ArticleListFAB(onClickToAddArticle = onClickToAddArticle) },

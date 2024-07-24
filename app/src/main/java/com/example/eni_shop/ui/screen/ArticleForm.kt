@@ -40,23 +40,24 @@ import com.example.eni_shop.ui.common.TopBar
 
 @Composable
 fun ArticleFormScreen(
-    navHostController : NavHostController,
-    navigationIcon : @Composable () -> Unit,
-    isDarkModeActivated : Boolean
+    navHostController: NavHostController,
+    navigationIcon: @Composable () -> Unit
 ) {
 
     Scaffold(
-        topBar = { TopBar(
-            navHostController = navHostController,
-            navigationIcon = navigationIcon,
-            isDarkModeActivated = isDarkModeActivated
-        ) }
-    ) {
-        ArticleForm(modifier = Modifier
-            .padding(it)
-            .verticalScroll(
-                rememberScrollState()
+        topBar = {
+            TopBar(
+                navHostController = navHostController,
+                navigationIcon = navigationIcon
             )
+        }
+    ) {
+        ArticleForm(
+            modifier = Modifier
+                .padding(it)
+                .verticalScroll(
+                    rememberScrollState()
+                )
         )
     }
 }
@@ -71,7 +72,6 @@ fun CustomTextField(
     trailingIcon: @Composable() (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
-
 
 
     Surface(

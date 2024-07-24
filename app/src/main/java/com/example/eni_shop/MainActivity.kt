@@ -56,28 +56,25 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-
             ENISHOPTheme(darkTheme = isDarkModeActivated) {
-                EniShopApp(isDarkModeActivated = isDarkModeActivated)
+                EniShopApp()
             }
         }
     }
 }
 
 @Composable
-fun EniShopApp(isDarkModeActivated : Boolean) {
+fun EniShopApp() {
     val navHostController = rememberNavController()
     EniShopNavHost(
-        navHostController = navHostController,
-        isDarkModeActivated = isDarkModeActivated
+        navHostController = navHostController
     )
 }
 
 
 @Composable
 fun EniShopNavHost(
-    navHostController: NavHostController,
-    isDarkModeActivated : Boolean
+    navHostController: NavHostController
 ) {
 
     val context = LocalContext.current
@@ -96,7 +93,6 @@ fun EniShopNavHost(
                     }
                 },
                 navHostController = navHostController,
-                isDarkModeActivated = isDarkModeActivated
             )
         }
         this.composable(
@@ -112,7 +108,6 @@ fun EniShopNavHost(
                 ArticleDetailScreen(
                     articleId = articleId,
                     navHostController = navHostController,
-                    isDarkModeActivated = isDarkModeActivated
                 )
             } else {
                 Toast.makeText(context, "Article non disponible !", Toast.LENGTH_SHORT).show()
@@ -122,7 +117,6 @@ fun EniShopNavHost(
         this.composable(route = EniShopArticleFormDestination.route) {
             ArticleFormScreen(
                 navHostController = navHostController,
-                isDarkModeActivated = isDarkModeActivated,
                 navigationIcon = {
                     if (navHostController.previousBackStackEntry != null) {
                         Icon(

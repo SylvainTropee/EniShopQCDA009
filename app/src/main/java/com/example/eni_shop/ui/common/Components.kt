@@ -66,7 +66,6 @@ fun TitleApp() {
 fun TopBar(
     navHostController: NavHostController,
     navigationIcon: @Composable () -> Unit = {},
-    isDarkModeActivated : Boolean
 ) {
     TopAppBar(
         title = { TitleApp() },
@@ -82,18 +81,27 @@ fun TopBar(
                 )
             }
         },
-        actions = { SettingsMenu(isDarkModeActivated = isDarkModeActivated) }
+        actions = { SettingsMenu() }
     )
 }
 
 @Composable
-fun SettingsMenu(isDarkModeActivated : Boolean) {
-
+fun SettingsMenu() {
+    val context = LocalContext.current
     var expanded by rememberSaveable {
         mutableStateOf(false)
     }
+    var checked by rememberSaveable {
+        mutableStateOf(false)
+    }
 
-    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        DataStoreManager.isDarkModeActivated(context).collect {
+            checked = it
+        }
+    }
+
+
     val coroutineScope = rememberCoroutineScope()
 
     Icon(
@@ -107,7 +115,7 @@ fun SettingsMenu(isDarkModeActivated : Boolean) {
         DropdownMenuItem(
             text = { Text("Dark Theme") },
             trailingIcon = {
-                Switch(checked = isDarkModeActivated, onCheckedChange = {
+                Switch(checked = checked, onCheckedChange = {
                     coroutineScope.launch(Dispatchers.IO) {
                         DataStoreManager.setDarkMode(context, it)
                     }
