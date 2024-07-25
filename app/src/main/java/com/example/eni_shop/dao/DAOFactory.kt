@@ -7,10 +7,7 @@ abstract class DAOFactory {
     companion object {
 
         fun createArticleDao(type: DAOType): ArticleDAO {
-            val articleDAO: ArticleDAO = when (type) {
-                DAOType.MEMORY -> ArticleDAOMemoryImpl()
-                DAOType.NETWORK -> TODO()
-            }
+            val articleDAO: ArticleDAO = ArticleDAOMemoryImpl()
             return articleDAO
         }
     }

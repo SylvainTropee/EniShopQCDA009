@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.eni_shop.bo.Article
+import com.example.eni_shop.db.EniShopDatabase
 import com.example.eni_shop.repository.ArticleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,7 +36,7 @@ class ArticleListViewModel(private val articleRepository: ArticleRepository) : V
                 val application = checkNotNull(extras[APPLICATION_KEY])
 
                 return ArticleListViewModel(
-                    ArticleRepository()
+                    ArticleRepository(EniShopDatabase.getInstance(application.applicationContext).getArticleDAO())
                 ) as T
             }
         }

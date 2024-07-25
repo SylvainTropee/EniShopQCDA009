@@ -3,6 +3,7 @@ package com.example.eni_shop.ui.screen
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -66,7 +67,8 @@ fun ArticleDetailScreen(
     ) {
         ArticleDetail(
             article = article,
-            modifier = Modifier.padding(it)
+            modifier = Modifier.padding(it),
+            articleDetailViewModel = articleDetailViewModel
         )
     }
 }
@@ -75,9 +77,11 @@ fun ArticleDetailScreen(
 @Composable
 fun ArticleDetail(
     article: Article,
+    articleDetailViewModel: ArticleDetailViewModel,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val isFavorite by articleDetailViewModel.isFavorite.collectAsState()
 
     Column(
         modifier = modifier
@@ -140,7 +144,16 @@ fun ArticleDetail(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Checkbox(checked = true, onCheckedChange = {})
+            Checkbox(checked = isFavorite, onCheckedChange = {isChecked ->
+                if(isChecked){
+                    articleDetailViewModel.saveArticleFav()
+                    Toast.makeText(context, "Article ajouté aux favoris", Toast.LENGTH_SHORT).show()
+                }else{
+                    articleDetailViewModel.deleteArticleFav()
+                    Toast.makeText(context, "Article supprimé des favoris", Toast.LENGTH_SHORT).show()
+                }
+
+            })
             Text(text = "Favoris ?")
         }
     }

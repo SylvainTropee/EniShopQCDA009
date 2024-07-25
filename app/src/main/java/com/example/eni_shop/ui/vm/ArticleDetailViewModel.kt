@@ -3,11 +3,16 @@ package com.example.eni_shop.ui.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.eni_shop.bo.Article
+import com.example.eni_shop.dao.DAOType
+import com.example.eni_shop.db.EniShopDatabase
 import com.example.eni_shop.repository.ArticleRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class ArticleDetailViewModel(private val articleRepository: ArticleRepository) : ViewModel() {
 
@@ -15,10 +20,36 @@ class ArticleDetailViewModel(private val articleRepository: ArticleRepository) :
     val article: StateFlow<Article>
         get() = _article
 
-    fun loadArticleById(id : Long){
+    private val _isFavorite = MutableStateFlow<Boolean>(false)
+    val isFavorite : StateFlow<Boolean>
+        get() = _isFavorite
+
+    fun loadArticleById(id: Long) {
         val currentArticle = articleRepository.getArticle(id)
-        if(currentArticle != null){
+        if (currentArticle != null) {
             _article.value = currentArticle
+
+
+            viewModelScope.launch(Dispatchers.IO) {
+                val articleFav = articleRepository.getArticle(id, DAOType.ROOM)
+                if(articleFav != null){
+                    _isFavorite.value = true
+                }
+            }
+        }
+    }
+
+    fun saveArticleFav(){
+        viewModelScope.launch(Dispatchers.IO) {
+            articleRepository.addArticle(_article.value, DAOType.ROOM)
+            _isFavorite.value = true
+        }
+    }
+
+    fun deleteArticleFav(){
+        viewModelScope.launch(Dispatchers.IO) {
+            articleRepository.deleteArticleFav(_article.value)
+            _isFavorite.value = false
         }
     }
 
@@ -35,7 +66,9 @@ class ArticleDetailViewModel(private val articleRepository: ArticleRepository) :
                 val application = checkNotNull(extras[APPLICATION_KEY])
 
                 return ArticleDetailViewModel(
-                    ArticleRepository()
+                    ArticleRepository(
+                        EniShopDatabase.getInstance(application.applicationContext).getArticleDAO()
+                    )
                 ) as T
             }
         }
