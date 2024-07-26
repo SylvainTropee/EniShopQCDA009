@@ -23,6 +23,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -30,13 +31,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import com.example.eni_shop.R
+import com.example.eni_shop.destination.EniShopArticleListDestination
+import com.example.eni_shop.destination.EniShopDestination
 import com.example.eni_shop.ui.common.TopBar
+import com.example.eni_shop.ui.vm.ArticleFormViewModel
 
 @Composable
 fun ArticleFormScreen(
@@ -53,6 +61,7 @@ fun ArticleFormScreen(
         }
     ) {
         ArticleForm(
+            navHostController = navHostController,
             modifier = Modifier
                 .padding(it)
                 .verticalScroll(
@@ -96,52 +105,50 @@ fun CustomTextField(
 }
 
 @Composable
-fun ArticleForm(modifier: Modifier = Modifier) {
+fun ArticleForm(
+    modifier: Modifier = Modifier,
+    navHostController: NavHostController,
+    articleFormViewModel: ArticleFormViewModel = viewModel(factory = ArticleFormViewModel.Factory)
+) {
 
-    var title by rememberSaveable {
-        mutableStateOf("")
-    }
-    var price by rememberSaveable {
-        mutableStateOf("")
-    }
-    var description by rememberSaveable {
-        mutableStateOf("")
-    }
+    val title by articleFormViewModel.name.collectAsState()
+    val price by articleFormViewModel.price.collectAsState()
+    val description by articleFormViewModel.description.collectAsState()
+    val categories by articleFormViewModel.categories.collectAsState()
+    val category by articleFormViewModel.category.collectAsState()
 
-    var category by rememberSaveable {
-        mutableStateOf("Choisir une catégorie")
-    }
 
     val context = LocalContext.current
 
     Column(modifier = modifier) {
         CustomTextField(
-            label = "Titre",
+            label = stringResource(id = R.string.hello),
             value = title,
             onValueChange = {
-                title = it
+                articleFormViewModel.setName(it)
             }
         )
         CustomTextField(
             label = "Description",
             value = description,
             onValueChange = {
-                description = it
+                articleFormViewModel.setDescription(it)
             }
         )
         CustomTextField(
             label = "Prix",
             value = price,
             onValueChange = {
-                price = it
+                articleFormViewModel.setPrice(it)
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
         DropDowMenuCategories(
+            categories = categories,
             value = category,
             //lors du clic sur un item de la liste, je l'affiche dans le champs catégorie
             onMenuItemClick = {
-                category = it
+                articleFormViewModel.setCategory(it)
             }
         )
         Column(
@@ -150,8 +157,13 @@ fun ArticleForm(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxSize()
         ) {
             Button(onClick = {
-                Toast.makeText(context, "L'article $title a été enregistré !", Toast.LENGTH_LONG)
+                articleFormViewModel.addArticle()
+                Toast.makeText(context, "L'article ${title} a été enregistré !", Toast.LENGTH_LONG)
                     .show()
+                navHostController.navigate(EniShopArticleListDestination.route) {
+                    launchSingleTop = true
+                    popUpTo(navHostController.graph.findStartDestination().id)
+                }
             }) {
                 Text(text = "Enregistrer")
             }
@@ -163,14 +175,14 @@ fun ArticleForm(modifier: Modifier = Modifier) {
 @Composable
 fun DropDowMenuCategories(
     value: String,
+    categories: List<String>,
     onMenuItemClick: (String) -> Unit
 ) {
-
-    val categories = listOf("electronics", "jewelery", "men's clothing", "women's clothing")
 
     var expanded by rememberSaveable {
         mutableStateOf(false)
     }
+
     Column {
         CustomTextField(
             label = "Catégorie",
@@ -203,8 +215,6 @@ fun DropDowMenuCategories(
                         onMenuItemClick(item)
                         expanded = false
                     }
-
-
                 )
             }
 

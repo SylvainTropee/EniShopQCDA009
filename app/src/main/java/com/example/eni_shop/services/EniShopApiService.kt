@@ -33,7 +33,7 @@ interface EniShopApiService {
     suspend fun getArticleById(@Path("id") id : Long) : Article
 
     @POST("products")
-    suspend fun addArticle(@Body article: Article) : Long
+    suspend fun addArticle(@Body article: Article) : Article
 
     @GET("products/categories")
     suspend fun getCategories() : List<String>

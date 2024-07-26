@@ -19,7 +19,7 @@ class ArticleRepository(
         }
     }
 
-    suspend fun addArticle(article: Article, type: DAOType = DAOType.NETWORK): Long {
+    suspend fun addArticle(article: Article, type: DAOType = DAOType.NETWORK): Any {
         when (type) {
             DAOType.NETWORK -> return eniShopApiService.addArticle(article)
             else -> return articleDaoRoomImpl.insert(article)
