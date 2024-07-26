@@ -51,6 +51,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.eni_shop.bo.Article
+import com.example.eni_shop.ui.common.LoadingScreen
 import com.example.eni_shop.ui.common.TopBar
 import com.example.eni_shop.ui.vm.ArticleListViewModel
 
@@ -63,7 +64,8 @@ fun ArticleListScreen(
     articleListViewModel: ArticleListViewModel = viewModel(factory = ArticleListViewModel.Factory)
 ) {
 
-    val categories = articleListViewModel.categories
+    val isLoading by articleListViewModel.isLoading.collectAsState()
+    val categories by articleListViewModel.categories.collectAsState()
     val articles by articleListViewModel.articles.collectAsState()
 
     var selectedCategory by rememberSaveable {
@@ -87,18 +89,23 @@ fun ArticleListScreen(
         floatingActionButton = { ArticleListFAB(onClickToAddArticle = onClickToAddArticle) },
         floatingActionButtonPosition = FabPosition.End
     ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-            CategoryFilterChip(
-                categories = categories,
-                selectedCategory = selectedCategory,
-                onCategoryClick = {
-                    selectedCategory = it
-                }
-            )
-            ArticleList(
-                articles = filteredArticles,
-                onClickToDetailArticle = onClickToDetailArticle
-            )
+
+        if (isLoading) {
+            LoadingScreen()
+        } else {
+            Column(modifier = Modifier.padding(innerPadding)) {
+                CategoryFilterChip(
+                    categories = categories,
+                    selectedCategory = selectedCategory,
+                    onCategoryClick = {
+                        selectedCategory = it
+                    }
+                )
+                ArticleList(
+                    articles = filteredArticles,
+                    onClickToDetailArticle = onClickToDetailArticle
+                )
+            }
         }
     }
 }

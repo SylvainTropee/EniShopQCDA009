@@ -52,6 +52,13 @@ android {
 
 dependencies {
 
+
+    //moshi
+    implementation("com.squareup.moshi:moshi:1.14.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
+    //retrofit
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+
     //room
     val room_version = "2.5.0"
     implementation("androidx.room:room-runtime:$room_version")

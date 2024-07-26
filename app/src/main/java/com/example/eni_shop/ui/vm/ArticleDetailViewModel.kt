@@ -9,6 +9,7 @@ import com.example.eni_shop.bo.Article
 import com.example.eni_shop.dao.DAOType
 import com.example.eni_shop.db.EniShopDatabase
 import com.example.eni_shop.repository.ArticleRepository
+import com.example.eni_shop.services.EniShopApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,32 +22,31 @@ class ArticleDetailViewModel(private val articleRepository: ArticleRepository) :
         get() = _article
 
     private val _isFavorite = MutableStateFlow<Boolean>(false)
-    val isFavorite : StateFlow<Boolean>
+    val isFavorite: StateFlow<Boolean>
         get() = _isFavorite
 
     fun loadArticleById(id: Long) {
-        val currentArticle = articleRepository.getArticle(id)
-        if (currentArticle != null) {
-            _article.value = currentArticle
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentArticle = articleRepository.getArticle(id)
+            if (currentArticle != null) {
+                _article.value = currentArticle
 
-
-            viewModelScope.launch(Dispatchers.IO) {
                 val articleFav = articleRepository.getArticle(id, DAOType.ROOM)
-                if(articleFav != null){
+                if (articleFav != null) {
                     _isFavorite.value = true
                 }
             }
         }
     }
 
-    fun saveArticleFav(){
+    fun saveArticleFav() {
         viewModelScope.launch(Dispatchers.IO) {
             articleRepository.addArticle(_article.value, DAOType.ROOM)
             _isFavorite.value = true
         }
     }
 
-    fun deleteArticleFav(){
+    fun deleteArticleFav() {
         viewModelScope.launch(Dispatchers.IO) {
             articleRepository.deleteArticleFav(_article.value)
             _isFavorite.value = false
@@ -67,7 +67,8 @@ class ArticleDetailViewModel(private val articleRepository: ArticleRepository) :
 
                 return ArticleDetailViewModel(
                     ArticleRepository(
-                        EniShopDatabase.getInstance(application.applicationContext).getArticleDAO()
+                        EniShopDatabase.getInstance(application.applicationContext).getArticleDAO(),
+                        EniShopApiService.ArticleApi.retrofitService
                     )
                 ) as T
             }

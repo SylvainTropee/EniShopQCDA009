@@ -2,36 +2,41 @@ package com.example.eni_shop.repository
 
 import com.example.eni_shop.bo.Article
 import com.example.eni_shop.dao.ArticleDAO
-import com.example.eni_shop.dao.DAOFactory
 import com.example.eni_shop.dao.DAOType
+import com.example.eni_shop.services.EniShopApiService
 
-class ArticleRepository(private val articleDaoRoomImpl : ArticleDAO) {
+class ArticleRepository(
+    private val articleDaoRoomImpl: ArticleDAO,
+    private val eniShopApiService: EniShopApiService
+) {
 
-    private val articleDAOMemoryImpl = DAOFactory.createArticleDao(DAOType.MEMORY)
+    //private val eniShopApiService = DAOFactory.createArticleDao(DAOType.NETWORK)
 
-    fun getArticle(id : Long, type : DAOType = DAOType.MEMORY) :Article?{
-        when(type){
-            DAOType.MEMORY ->  return articleDAOMemoryImpl.findById(id)
-            else ->return articleDaoRoomImpl.findById(id)
+    suspend fun getArticle(id: Long, type: DAOType = DAOType.NETWORK): Article? {
+        when (type) {
+            DAOType.NETWORK -> return eniShopApiService.getArticleById(id)
+            else -> return articleDaoRoomImpl.findById(id)
         }
     }
 
-    fun addArticle(article: Article, type : DAOType = DAOType.MEMORY) : Long {
-        when (type){
-            DAOType.MEMORY -> return articleDAOMemoryImpl.insert(article)
-            else ->  return articleDaoRoomImpl.insert(article)
+    suspend fun addArticle(article: Article, type: DAOType = DAOType.NETWORK): Long {
+        when (type) {
+            DAOType.NETWORK -> return eniShopApiService.addArticle(article)
+            else -> return articleDaoRoomImpl.insert(article)
         }
     }
 
-    fun getAllArticles() : List<Article> {
-        return articleDAOMemoryImpl.findAll()
+    suspend fun getAllArticles(): List<Article> {
+        return eniShopApiService.getArticles()
     }
 
-    fun deleteArticleFav(article: Article){
+    fun deleteArticleFav(article: Article) {
         articleDaoRoomImpl.delete(article)
     }
 
-
+    suspend fun getCategories(): List<String> {
+        return eniShopApiService.getCategories()
+    }
 
 
 }
